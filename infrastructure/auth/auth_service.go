@@ -1,9 +1,9 @@
 package auth
 
 import (
-	"loan-api/domain"
 	"context"
 	"errors"
+	"loan-api/domain"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -16,18 +16,20 @@ type authService struct {
 	accessSecret     string
 	refreshSecret    string
 	resetSecret      string
+	verifySecret     string
 	accessExpiry     time.Duration
 	refreshExpiry    time.Duration
 	resetExpiry      time.Duration
 }
 
-func NewAuthService(refreshTokenRepo domain.RefreshTokenRepository, resetTokenRepo domain.ResetTokenRepository, accessSecret, refreshSecret, resetSecret string, accessExpiryHours, refreshExpiryHours, resetExpiryHours int) *authService {
+func NewAuthService(refreshTokenRepo domain.RefreshTokenRepository, resetTokenRepo domain.ResetTokenRepository, accessSecret, refreshSecret, resetSecret, verifySecret string, accessExpiryHours, refreshExpiryHours, resetExpiryHours int) *authService {
 	return &authService{
 		refreshTokenRepo: refreshTokenRepo,
 		resetTokenRepo:   resetTokenRepo,
 		accessSecret:     accessSecret,
 		refreshSecret:    refreshSecret,
 		resetSecret:      resetSecret,
+		verifySecret:     verifySecret,
 		accessExpiry:     time.Duration(accessExpiryHours) * time.Hour,
 		refreshExpiry:    time.Duration(refreshExpiryHours) * time.Hour,
 		resetExpiry:      time.Duration(resetExpiryHours) * time.Hour,
@@ -191,4 +193,25 @@ func (a *authService) ValidateResetToken(ctx context.Context, token string) (str
 func (a *authService) InvalidateResetToken(ctx context.Context, token string) error {
 	// Invalidate the reset token in the repository
 	return a.resetTokenRepo.InvalidateResetToken(ctx, token)
+}
+
+func (a *authService) ParseToken(tokenString string) (*domain.Claims, error) {
+	// Parse and validate the token
+	token, err := jwt.ParseWithClaims(tokenString, &domain.Claims{}, func(token *jwt.Token) (interface{}, error) {
+		// Check token signing method
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("unexpected signing method")
+		}
+		return []byte(a.verifySecret), nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// Extract claims
+	if claims, ok := token.Claims.(*domain.Claims); ok && token.Valid {
+		return claims, nil
+	}
+
+	return nil, errors.New("invalid token")
 }

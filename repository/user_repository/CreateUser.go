@@ -1,11 +1,14 @@
 package user_repository
 
 import (
-	"loan-api/domain"
 	"context"
+	"loan-api/domain"
 )
 
 func (r *userRepository) CreateUser(ctx context.Context, user *domain.User) error {
 	_, err := r.collection.InsertOne(ctx, user)
-	return err
+	if err != nil {
+		return err
+	}
+	return nil
 }

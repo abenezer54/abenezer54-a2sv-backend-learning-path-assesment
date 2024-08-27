@@ -1,6 +1,6 @@
 package domain
 
-type ResgisterRequest struct {
+type RegisterRequest struct {
 	Firstname string `json:"firstname" bson:"firstname" binding:"required"`
 	Lastname  string `json:"lastname" bson:"lastname" binding:"required"`
 	Username  string `json:"username" bson:"username" binding:"required"`

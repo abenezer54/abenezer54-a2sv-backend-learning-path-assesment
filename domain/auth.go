@@ -15,6 +15,7 @@ type AuthService interface {
 	GeneratePasswordResetToken(ctx context.Context, email string) (string, error)
 	ValidateResetToken(ctx context.Context, token string) (string, error)
 	InvalidateResetToken(ctx context.Context, token string) error
+	ParseToken(tokenString string) (*Claims, error)
 }
 
 type RefreshRequest struct {
