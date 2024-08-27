@@ -8,8 +8,8 @@ import (
 )
 
 func main() {
-	userController, loanController, env := cmd.InitializeDepenencies()
+	userController, loanController, logController,env := cmd.InitializeDepenencies()
 	r := gin.Default()
-	router.SetRouter(r, userController, loanController, env)
+	router.SetRouter(r, userController, loanController, logController,env)
 	r.Run(env.ServerAddress)
 }
