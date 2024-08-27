@@ -10,10 +10,9 @@ import (
 func SetRouter(router *gin.Engine, uc *user_controller.UserController, env *bootstrap.Env) {
 	// User routes
 	user_routes := router.Group("/users")
-	user_routes.POST("/register", uc.Register)
-		
-	// router.GET("/verify-email", uc.VerifyEmail)
-	// router.POST("/login", uc.Login)
+	user_routes.POST("/register", uc.Register)	
+	user_routes.GET("/verify-email", uc.VerifyEmail)
+	user_routes.POST("/login", uc.Login)
 	// router.POST("/refresh", uc.RefreshTokens)
 	// router.GET("/logout", auth.JwtAuthMiddleware(env.AccessTokenSecret), uc.Logout)
 	// router.POST("/forgot-password", uc.ForgotPassword)
