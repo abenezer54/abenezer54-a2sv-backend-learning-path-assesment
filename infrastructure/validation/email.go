@@ -15,11 +15,5 @@ func ValidateEmail(email string) error {
 		return err
 	}
 
-	// Validate the existence of the email user on the mail server
-	err = checkmail.ValidateHostAndUser("", "", email)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
