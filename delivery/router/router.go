@@ -15,6 +15,7 @@ func SetRouter(router *gin.Engine, uc *user_controller.UserController, env *boot
 	user_routes.GET("/verify-email", uc.VerifyEmail)
 	user_routes.POST("/login", uc.Login)
 	user_routes.POST("/token/refresh", auth.JwtAuthMiddleware(env.AccessTokenSecret), uc.RefreshTokens)
+	user_routes.POST("/profile", auth.JwtAuthMiddleware(env.AccessTokenSecret), uc.GetProfile)
 	user_routes.POST("/forgot-password", uc.ForgotPassword)
 	router.POST("/reset-password", uc.ResetPassword)
 	admin_routes := router.Group("/admin")

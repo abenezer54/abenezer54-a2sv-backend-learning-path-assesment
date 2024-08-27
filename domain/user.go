@@ -66,6 +66,7 @@ type UserUsecase interface {
 	ResetPassword(ctx context.Context, req ResetPasswordRequest) error
 	GetAllUsers(ctx context.Context) ([]User, error)
 	DeleteUserByID(ctx context.Context, id string) error
+	GetUserByID(ctx context.Context, id string) (*User, error)
 	// PromoteDemote(ctx context.Context, userID primitive.ObjectID, action string) error
 	// GetByEmail(ctx context.Context, email string) (User, error)
 	// GetByUsername(ctx context.Context, username string) (User, error)
