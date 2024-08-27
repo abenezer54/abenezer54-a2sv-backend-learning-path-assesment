@@ -59,10 +59,13 @@ type UserUsecase interface {
 	// New methods for user usecase
 	// UpdateUser(ctx context.Context, userID primitive.ObjectID, updatedUser *UpdateRequest) error
 	Register(ctx context.Context, req ResgisterRequest, tokenSecret string, tokenExpiry int) (RegisterResponse, error)
-	// Login(ctx context.Context, req LoginRequest) (*LoginResponse, error)
+	VerifyEmail(ctx context.Context, token string) error
+	Login(ctx context.Context, req LoginRequest) (*LoginResponse, error)
 	// Logout(ctx context.Context, userID string) error
-	// RequestPasswordReset(ctx context.Context, email, frontendBaseURL string) error
-	// ResetPassword(ctx context.Context, req ResetPasswordRequest) error
+	RequestPasswordReset(ctx context.Context, email, frontendBaseURL string) error
+	ResetPassword(ctx context.Context, req ResetPasswordRequest) error
+	GetAllUsers(ctx context.Context) ([]User, error)
+	DeleteUserByID(ctx context.Context, id string) error
 	// PromoteDemote(ctx context.Context, userID primitive.ObjectID, action string) error
 	// GetByEmail(ctx context.Context, email string) (User, error)
 	// GetByUsername(ctx context.Context, username string) (User, error)
@@ -81,10 +84,12 @@ type UserRepository interface {
 	// New methods for user repository
 
 	// CreateUser(ctx context.Context, user *User) error
-	// GetByUsernameOrEmail(ctx context.Context, identifier string) (*User, error)
+	GetByUsernameOrEmail(ctx context.Context, identifier string) (*User, error)
 	GetByEmail(ctx context.Context, email string) (*User, error)
-	// GetByID(ctx context.Context, id string) (*User, error)
-	// UpdatePasswordByEmail(ctx context.Context, email, newPassword string) error
+	GetByID(ctx context.Context, id string) (*User, error)
+	UpdatePasswordByEmail(ctx context.Context, email, newPassword string) error
+	Delete(ctx context.Context, id string) error
+	GetAll(ctx context.Context) ([]User, error)
 	// PromoteDemote(ctx context.Context, userID primitive.ObjectID, action string) error
 	// UpdateUser(ctx context.Context, userID primitive.ObjectID, updatedUser *UpdateRequest) error
 }
