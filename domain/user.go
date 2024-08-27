@@ -47,18 +47,10 @@ type UpdateRequest struct {
 // }
 
 type UserUsecase interface {
-	// SignupUsecase(ctx context.Context, user *User) error
-	// UpdateUser(ctx context.Context, userID primitive.ObjectID, updatedUser *User) error
-
-	// GetByUsername(ctx context.Context, username string) (User, error)
-	// DeleteRefreshTokenByUserID(ctx context.Context, userID string) error
-	// GeneratePasswordResetToken(ctx context.Context, email, resetTokenSecret string, expiryHour int) error
-	// ResetPassword(ctx context.Context, resetToken, newPassword, resetTokenSecret string) error
-	// LoginUser(ctx context.Context, loginRequest LoginRequest, Env *bootstrap.Env) (LoginResponse, error)
 
 	// New methods for user usecase
 	// UpdateUser(ctx context.Context, userID primitive.ObjectID, updatedUser *UpdateRequest) error
-	Register(ctx context.Context, req ResgisterRequest, tokenSecret string, tokenExpiry int) (RegisterResponse, error)
+	Register(ctx context.Context, req RegisterRequest, tokenSecret string, tokenExpiry int) (RegisterResponse, error)
 	VerifyEmail(ctx context.Context, token string) error
 	Login(ctx context.Context, req LoginRequest) (*LoginResponse, error)
 	// Logout(ctx context.Context, userID string) error
@@ -67,24 +59,16 @@ type UserUsecase interface {
 	GetAllUsers(ctx context.Context) ([]User, error)
 	DeleteUserByID(ctx context.Context, id string) error
 	GetUserByID(ctx context.Context, id string) (*User, error)
+	CreateUserFromToken(ctx context.Context, token string) (*User, error)
 	// PromoteDemote(ctx context.Context, userID primitive.ObjectID, action string) error
 	// GetByEmail(ctx context.Context, email string) (User, error)
 	// GetByUsername(ctx context.Context, username string) (User, error)
 }
 
 type UserRepository interface {
-	// SignupRepository(ctx context.Context, user *User) error
-	// ForgetPassword(email string) error
-	// UpdateUser(ctx context.Context, userID primitive.ObjectID, updatedUser *UpdateRequest) error
-	// GetByEmail(ctx context.Context, email string) (User, error)
-	// GetByUsername(ctx context.Context, username string) (User, error)
-	// DeleteRefreshTokenByUserID(ctx context.Context, userID string) error // used in logout
-	// StoreResetToken(ctx context.Context, userID string, resetToken string, expiryHour int) error
-	// UpdatePassword(ctx context.Context, userID string, newPassword string) error
-
 	// New methods for user repository
 
-	// CreateUser(ctx context.Context, user *User) error
+	CreateUser(ctx context.Context, user *User) error
 	GetByUsernameOrEmail(ctx context.Context, identifier string) (*User, error)
 	GetByEmail(ctx context.Context, email string) (*User, error)
 	GetByID(ctx context.Context, id string) (*User, error)

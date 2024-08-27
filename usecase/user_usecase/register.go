@@ -9,7 +9,7 @@ import (
 	"loan-api/infrastructure/validation"
 )
 
-func (u *userUsecase) Register(ctx context.Context, req domain.ResgisterRequest, tokenSecret string, tokenExpiry int) (domain.RegisterResponse, error) {
+func (u *userUsecase) Register(ctx context.Context, req domain.RegisterRequest, tokenSecret string, tokenExpiry int) (domain.RegisterResponse, error) {
 
 	err := validation.ValidateEmail(req.Email)
 	if err != nil {
@@ -25,6 +25,7 @@ func (u *userUsecase) Register(ctx context.Context, req domain.ResgisterRequest,
 	}
 
 	user := &domain.User{
+		Email:     req.Email,
 		Firstname: req.Firstname,
 		Lastname:  req.Lastname,
 		Username:  req.Username,
@@ -34,16 +35,20 @@ func (u *userUsecase) Register(ctx context.Context, req domain.ResgisterRequest,
 	if err != nil {
 		return domain.RegisterResponse{}, err
 	}
-	verificationURL := fmt.Sprintf("https://localhost:800/verify-email?token=%s", verifyToken)
+
+	verificationURL := fmt.Sprintf("http://localhost:8080/users/verify-email?token=%s", verifyToken)
 	err = u.emailService.SendVerificationEmail(ctx, req.Email, verificationURL)
 	if err != nil {
 		return domain.RegisterResponse{}, err
 	}
 
-	u.VerifyTokenRepo.StoreVerifyToken(ctx, verifyToken)
+	// Store the token with the associated email
+	err = u.VerifyTokenRepo.StoreVerifyToken(ctx, verifyToken, req.Email)
+	if err != nil {
+		return domain.RegisterResponse{}, err
+	}
 
 	return domain.RegisterResponse{
 		Message: "Verification email sent",
 	}, nil
-
 }
